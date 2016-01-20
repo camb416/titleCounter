@@ -1,0 +1,6 @@
+#xcode stuff
+titleCounter.xcodeproj/project.xcworkspace/xcuserdata/cbrowning.xcuserdatad/UserInterfaceState.xcuserstate
+
+# ignore binaries
+bin/titleCounterDebug.app/*
+bin/titleCounter.app/*

@@ -1,6 +1,6 @@
 #include "ofApp.h"
 
-#define IGNORECHARS 26
+#define IGNORECHARS 32
 
 
 // sort on abc's
@@ -27,7 +27,7 @@ bool ofApp::sortOnOccurrences(const LyricWord &a, const LyricWord &b) {
 bool ofApp::removeWordIf(LyricWord &wrd) {
     
     bool bRemove = false;
-    static string ignoreWords[11] = {"the", "to", "of", "a", "and", "i", "it", "if", "is", "in", "be"};
+    static string ignoreWords[15] = {"with", "for", "at", "ii","the", "to", "of", "a", "and", "i", "it", "if", "is", "in", "be"};
     
     // if this word empty
     if(wrd.word.empty()) bRemove = true;
@@ -49,7 +49,7 @@ void ofApp::setup() {
     ofTrueTypeFont::setGlobalDpi(96);
 
     // load the font
-	font.load("sans-serif", 11);
+	font.load("sans-serif", 9, true);
     sortTypeInfo = "no sort";
     words.clear();
     
@@ -62,6 +62,19 @@ void ofApp::setup() {
     // we need to also turn new lines into spaces so we can seperate words on new lines as well 
     ofStringReplace(content, "\r", " ");
     ofStringReplace(content, "\n", " ");
+    
+    // first get rid of rando characters
+    char ignoreList[IGNORECHARS] = {'[',']',';','&','+','=',',', '.', '(', ')', '?', '!', '-', ':', '"', '\'','\\' , '/', '\n', '\t','#','1','2','3','4','5','6','7','8','9','0'};
+    for(int j=0; j<(IGNORECHARS-1); j++) {
+        
+        // make string from char
+        string removeStr;
+        removeStr += ignoreList[j];
+        
+        // remove and of the chars found
+        ofStringReplace(content, removeStr, " ");
+    }
+
 
     vector <string> splitString = ofSplitString(content, " ", true, true);
     
@@ -78,17 +91,7 @@ void ofApp::setup() {
     for (unsigned int i=0; i<words.size(); i++) {
         // run throught this ignore list and replace
         // that char with nothing
-        char ignoreList[IGNORECHARS] = {',', '.', '(', ')', '?', '!', '-', ':', '"', '\'','\\' , '/', '\n', '\t','#','1','2','3','4','5','6','7','8','9','0'};
-        for(int j=0; j<(IGNORECHARS-1); j++) {
-      
-            // make string from char
-            string removeStr;
-            removeStr += ignoreList[j];
-            
-            // remove and of the chars found
-            ofStringReplace(words[i].word, removeStr, "");    
-        }
-    }
+            }
     
  
     // count the amount of times that we see a word
@@ -133,7 +136,7 @@ void ofApp::draw() {
     
     ofPushMatrix();
     //ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
-    ofTranslate(ofGetWidth()/2,50);
+    ofTranslate(50,ofGetHeight()/2);
     
     float radius = 350;
     
@@ -141,17 +144,18 @@ void ofApp::draw() {
         float t = -HALF_PI + ofMap(i, 0, (words.size()/2), 0, TWO_PI);
         // float x = cos( t ) * radius;
         // float y = sin( t ) * radius;
-        float x = 50;
-        float y = i*20;
-        float a = ofRadToDeg(atan2(y, x));
+        float x = i*2;
+        float y = 0;
+        // float a = ofRadToDeg(atan2(y, x));
+        float a = 90;
         ofSetColor(0);
         ofPushMatrix();
         ofTranslate(x, y);
-        //ofRotateZ(a);
+        ofRotateZ(a);
         float scl = 1;
         glScalef(scl, scl, scl);
         font.drawString(words[i].word, 0, 20);
-        ofDrawRectangle( 0,10,- words[i].occurrences,10);
+        ofDrawRectangle( 0,20,- words[i].occurrences*2,1);
         
         ofPopMatrix();
         

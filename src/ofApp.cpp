@@ -33,7 +33,7 @@ bool ofApp::removeWordIf(LyricWord &wrd) {
     if(wrd.word.empty()) bRemove = true;
     
     // are we a word that we do now want
-    for (int j=0; j<11; j++) {
+    for (int j=0; j<15; j++) {
         if(wrd.word == ignoreWords[j]) {
             bRemove = true;
             break;
@@ -45,6 +45,8 @@ bool ofApp::removeWordIf(LyricWord &wrd) {
 
 //--------------------------------------------------------------
 void ofApp::setup() {
+    
+    ofBackground(255);
     
     ofTrueTypeFont::setGlobalDpi(96);
 
@@ -132,38 +134,56 @@ void ofApp::update() {
 //--------------------------------------------------------------
 void ofApp::draw() {
 
-    ofSetColor(50);
+    ofBackground(100);
+    ofSetColor(255);
+    ofDrawRectangle(50,150,1100,300);
     
+
+    ofSetColor(255);
+    font.drawString(sortTypeInfo, 50, 50);
+    ofSetColor(50);
     ofPushMatrix();
     //ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
-    ofTranslate(50,ofGetHeight()/2);
+    ofTranslate(0,ofGetHeight()/2);
     
     float radius = 350;
+    
     
     for(unsigned int i=0; i<words.size()/2; i++) {
         float t = -HALF_PI + ofMap(i, 0, (words.size()/2), 0, TWO_PI);
         // float x = cos( t ) * radius;
         // float y = sin( t ) * radius;
-        float x = i*2;
+        float x = i*2+50 ;
         float y = 0;
         // float a = ofRadToDeg(atan2(y, x));
         float a = 90;
-        ofSetColor(0);
+        
+        
+        
         ofPushMatrix();
         ofTranslate(x, y);
         ofRotateZ(a);
-        float scl = 1;
-        glScalef(scl, scl, scl);
-        font.drawString(words[i].word, 0, 20);
-        ofDrawRectangle( 0,20,- words[i].occurrences*2,1);
+        
+        float barWidth = 1;
+        ofSetColor(0);
+        
+        if(curWord == i){
+            float scl = 1;
+            glScalef(scl, scl, scl);
+            ofSetColor(255);
+            font.drawString(words[i].word, 0, 0);
+            barWidth = 1;
+            ofSetColor(255,0,0);
+        }
+
+        
+        ofDrawRectangle( 0,0,- words[i].occurrences*4,barWidth);
         
         ofPopMatrix();
         
     }    
     
-    ofSetColor(100);
-    font.drawString(sortTypeInfo, -(font.stringWidth(sortTypeInfo)/2), 0);
-    ofPopMatrix();
+        ofPopMatrix();
     
     
     // instruction
@@ -210,6 +230,21 @@ void ofApp::keyReleased  (int key){
 
 //--------------------------------------------------------------
 void ofApp::mouseMoved(int x, int y ){
+    
+    float nearestDist = 9999.9f;
+    int nearestWord = -1;
+    for(int i=0; i<words.size(); i++){
+        int thisX = i*2;
+        float thisDist = abs(x- 25 - thisX);
+        if(thisDist<nearestDist){
+            nearestWord = i;
+            nearestDist = thisDist;
+        }
+    }
+    if(nearestWord>-1){
+        curWord = nearestWord;
+    }
+    // ofLog() << nearestDist;
     
 }
 

@@ -40,4 +40,6 @@ public:
     ofTrueTypeFont      font;
     string              sortTypeInfo;
     vector <LyricWord>  words;
+    
+    int curWord;
 };
